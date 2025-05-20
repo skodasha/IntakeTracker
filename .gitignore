@@ -1,0 +1,7 @@
+node_modules/
+.bundle/
+_bundle/
+ios/
+.yarn/
+android/
+.env

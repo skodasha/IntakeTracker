@@ -23,7 +23,7 @@ const App: FC = () => (
     <StatusBar animated translucent backgroundColor="transparent" barStyle="dark-content" />
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
-        <ApplicationContextProvider services={services}>
+        <ApplicationContextProvider services={services} repositories={repositories}>
           <UserContextProvider>
             <BottomSheetModalProvider>
               <RootNavigator />

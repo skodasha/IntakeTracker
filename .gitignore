@@ -5,3 +5,4 @@ ios/
 .yarn/
 android/
 .env
+.DS_Store

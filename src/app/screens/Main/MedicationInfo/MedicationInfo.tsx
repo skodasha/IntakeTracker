@@ -1,20 +1,58 @@
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { type FC } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useRoute } from '@react-navigation/native';
 
-import { MainRouteProps } from '@/app/interfaces/navigation/main.interface';
-import { Text } from '@/app/components';
-import MedicationForm from './components/MedicationForm';
-import { MAIN_ROUTE } from '@/app/routes/routes';
-import { useMedicationById, useMedications } from '@/app/hooks/useMedications';
-import colors from '@/app/theme/colors';
-import { MedicationType } from '@/app/interfaces/medication.interface';
 import BackIcon from '@/app/assets/icons/back-icon.svg';
 import BinIcon from '@/app/assets/icons/bin-icon.svg';
+import { Text } from '@/app/components';
+import { useMedicationById, useMedications } from '@/app/hooks/useMedications';
+import { MedicationType } from '@/app/interfaces/medication.interface';
+import { MainRouteProps } from '@/app/interfaces/navigation/main.interface';
+import { MAIN_ROUTE } from '@/app/routes/routes';
+import colors from '@/app/theme/colors';
+
+import MedicationForm from './components/MedicationForm';
 
 const stylesheet = createStyleSheet((theme, runtime) => ({
+  backButton: {
+    alignItems: 'center',
+    backgroundColor: theme.app.background.primary,
+    borderRadius: 36,
+    height: 36,
+    justifyContent: 'center',
+    left: 20,
+    position: 'absolute',
+    width: 36,
+    zIndex: 1,
+  },
+  deleteButton: {
+    alignItems: 'center',
+    backgroundColor: theme.app.background.primary,
+    borderRadius: 36,
+    height: 36,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 20,
+    width: 36,
+  },
+  formContainer: {
+    backgroundColor: theme.app.background.primary,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    flex: 1,
+    padding: 20,
+    width: '100%',
+  },
+  header: {
+    height: 36,
+    justifyContent: 'center',
+    marginBottom: 24,
+    marginTop: 16,
+    paddingHorizontal: 20,
+    position: 'relative',
+    width: '100%',
+  },
   root: {
     alignItems: 'center',
     backgroundColor: theme.app.background.secondary,
@@ -22,47 +60,9 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     paddingTop: runtime.insets.top,
   },
   title: {
+    textAlign: 'center',
     width: '100%',
-    textAlign: 'center'
   },
-  backButton: {
-    position: 'absolute',
-    width: 36,
-    height: 36,
-    backgroundColor: theme.app.background.primary,
-    borderRadius: 36,
-    left: 20,
-    zIndex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  header: {
-    width: '100%',
-    marginTop: 16,
-    marginBottom: 24,
-    position: 'relative',
-    height: 36,
-    justifyContent: 'center',
-    paddingHorizontal: 20
-  },
-  formContainer: {
-    backgroundColor: theme.app.background.primary,
-    flex: 1,
-    width: '100%',
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    padding: 20
-  },
-  deleteButton: {
-    position: 'absolute',
-    width: 36,
-    height: 36,
-    backgroundColor: theme.app.background.primary,
-    borderRadius: 36,
-    right: 20,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
 }));
 
 const MedicationInfo: FC = () => {
@@ -72,28 +72,38 @@ const MedicationInfo: FC = () => {
 
   const { medicationId } = route.params || {};
 
-  const { createMedication, updateMedication, isLoading: isSubmitLoading } = useMedications();
+  const {
+    createMedication,
+    deleteMedication,
+    isLoading: isSubmitLoading,
+    updateMedication,
+  } = useMedications();
   const { data, isLoading } = useMedicationById(medicationId);
-  
+
   const isEditMode = !!medicationId;
 
   const title = isEditMode ? 'Edit medication' : 'Add new medication';
   const buttonText = isEditMode ? 'Save' : 'Add medication';
 
-  const handleSubmit = (data: MedicationType) => {
+  const handleSubmit = (medication: MedicationType) => {
     if (isEditMode) {
       updateMedication({
         id: medicationId,
-        ...data
+        ...medication,
       });
     } else {
-      createMedication(data);
+      createMedication(medication);
     }
 
-    navigation.goBack()
+    navigation.goBack();
   };
 
   const handleBackPress = () => navigation.goBack();
+
+  const handleDeletePress = (id: string) => {
+    deleteMedication(id);
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.root}>
@@ -104,18 +114,20 @@ const MedicationInfo: FC = () => {
         <Text fontSize={18} fontWeight="500" lineHeight={24} style={styles.title}>
           {title}
         </Text>
-        {isEditMode && <TouchableOpacity style={styles.deleteButton}>
-          <BinIcon /></TouchableOpacity>}
+        {isEditMode && (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDeletePress(medicationId)}
+          >
+            <BinIcon />
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.formContainer}>
         {isLoading || isSubmitLoading ? (
           <ActivityIndicator color={colors.blue} />
         ) : (
-          <MedicationForm
-            buttonText={buttonText}
-            onSubmit={handleSubmit}
-            defaultValues={data}
-          />
+          <MedicationForm buttonText={buttonText} defaultValues={data} onSubmit={handleSubmit} />
         )}
       </View>
     </View>

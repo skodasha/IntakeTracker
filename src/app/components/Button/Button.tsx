@@ -13,23 +13,25 @@ const stylesheet = createStyleSheet((theme) => ({
   },
   buttonText: {
     color: theme.app.button.primary.textColor,
-  }
+  },
 }));
 
 type ButtonPropsType = {
-  title: string;
   onPress: () => void;
-  style?: StyleProp<ViewStyle>
+  title: string;
+  style?: StyleProp<ViewStyle>;
 };
 
-const Button = ({ title, onPress, style }: ButtonPropsType) => {
+const Button = ({ onPress, style, title }: ButtonPropsType) => {
   const { styles } = useStyles(stylesheet);
 
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-      <Text fontSize={16} fontWeight='500' style={styles.buttonText}>{title}</Text>
+      <Text fontSize={16} fontWeight="500" style={styles.buttonText}>
+        {title}
+      </Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 export default Button;

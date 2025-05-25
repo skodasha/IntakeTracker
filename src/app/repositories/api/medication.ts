@@ -1,5 +1,6 @@
 import config from '@/app/config/config';
 import { IMedication, MedicationType } from '@/app/interfaces/medication.interface';
+
 import ApiRepository from './api';
 
 class MedicationRepository extends ApiRepository {
@@ -22,7 +23,10 @@ class MedicationRepository extends ApiRepository {
     return result.data;
   }
 
-  public async updateMedication(medicationId: string, payload: MedicationType): Promise<IMedication> {
+  public async updateMedication(
+    medicationId: string,
+    payload: MedicationType
+  ): Promise<IMedication> {
     const result = await this.http.put(`/medication/update/${medicationId}`, payload);
     return result.data;
   }

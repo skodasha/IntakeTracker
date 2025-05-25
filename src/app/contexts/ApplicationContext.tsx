@@ -1,23 +1,28 @@
 import { type PropsWithChildren, createContext, useContext, useMemo } from 'react';
+
 import StorageRepository from '../repositories/storage';
 
 interface IApplicationContext {
-  services: { [key: string]: unknown };
   repositories: { storage: StorageRepository };
+  services: { [key: string]: unknown };
 }
 
 export const ApplicationContext = createContext<IApplicationContext>({
-  services: {},
   repositories: {} as { storage: StorageRepository },
+  services: {},
 });
 
 interface ApplicationContextProviderProps extends PropsWithChildren {
-  services: { [key: string]: unknown };
   repositories: { storage: StorageRepository };
+  services: { [key: string]: unknown };
 }
 
-const ApplicationContextProvider = ({ children, services, repositories }: ApplicationContextProviderProps) => {
-  const value = useMemo(() => ({ services, repositories }), [services, repositories]);
+const ApplicationContextProvider = ({
+  children,
+  repositories,
+  services,
+}: ApplicationContextProviderProps) => {
+  const value = useMemo(() => ({ repositories, services }), [services, repositories]);
 
   return <ApplicationContext.Provider value={value}>{children}</ApplicationContext.Provider>;
 };

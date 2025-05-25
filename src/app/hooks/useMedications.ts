@@ -9,8 +9,8 @@ export const useMedications = () => {
   const queryClient = useQueryClient();
 
   const medicationsQuery = useQuery({
-    queryKey: MEDICATIONS_QUERY_KEY,
     queryFn: () => medicationRepository.getAllMedications(),
+    queryKey: MEDICATIONS_QUERY_KEY,
   });
 
   const createMedicationMutation = useMutation({
@@ -19,7 +19,8 @@ export const useMedications = () => {
   });
 
   const updateMedicationMutation = useMutation({
-    mutationFn: ({ id, ...payload }: IMedication) => medicationRepository.updateMedication(id, payload),
+    mutationFn: ({ id, ...payload }: IMedication) =>
+      medicationRepository.updateMedication(id, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: MEDICATIONS_QUERY_KEY }),
   });
 
@@ -31,15 +32,15 @@ export const useMedications = () => {
   return {
     ...medicationsQuery,
     createMedication: createMedicationMutation.mutate,
-    updateMedication: updateMedicationMutation.mutate,
     deleteMedication: deleteMedicationMutation.mutate,
+    updateMedication: updateMedicationMutation.mutate,
   };
 };
 
 export const useMedicationById = (id?: string) => {
   return useQuery({
-    queryKey: ['medications', id],
-    queryFn: () => medicationRepository.getMedicationById(id!),
     enabled: !!id,
+    queryFn: () => medicationRepository.getMedicationById(id!),
+    queryKey: ['medications', id],
   });
 };

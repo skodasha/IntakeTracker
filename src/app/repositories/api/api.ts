@@ -1,10 +1,11 @@
 import { AxiosResponse } from 'axios';
 
-import { CustomAxiosError, IApiError } from '@/app/interfaces/error.interface';
+import { CustomAxiosError } from '@/app/interfaces/error.interface';
 import HttpRepository from '@/app/repositories/http';
 
 class ApiRepository {
   public http: HttpRepository;
+
   private accessToken: string | null = null;
 
   constructor(baseUrl: string) {
@@ -14,8 +15,8 @@ class ApiRepository {
       axiosConfig.headers = axiosConfig.headers || {};
 
       if (this.accessToken) {
-        axiosConfig.headers['Authorization'] = `Bearer ${this.accessToken}`;
-      }   
+        axiosConfig.headers.Authorization = `Bearer ${this.accessToken}`;
+      }
 
       return axiosConfig;
     });
@@ -27,9 +28,7 @@ class ApiRepository {
         const apiErrorData = apiError?.response?.data;
 
         if (apiErrorData?.errors?.length) {
-          const formattedErrors = apiErrorData.errors
-            .map(err => err.msg)
-            .join('\n');
+          const formattedErrors = apiErrorData.errors.map((err) => err.msg).join('\n');
 
           apiError.formattedMessage = formattedErrors;
         } else if (apiErrorData?.message) {

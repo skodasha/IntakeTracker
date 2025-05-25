@@ -1,69 +1,68 @@
-import { type FC } from 'react';
 import { useNavigation } from '@react-navigation/native';
-
+import { type FC } from 'react';
 import { ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import AddIcon from '@/app/assets/icons/add-icon.svg';
+import LogoutIcon from '@/app/assets/icons/logout-icon.svg';
 import { Text } from '@/app/components';
+import { useMedications } from '@/app/hooks/useMedications';
 import { MainNavigationProps } from '@/app/interfaces/navigation/main.interface';
 import { MAIN_ROUTE } from '@/app/routes/routes';
-import { useMedications } from '@/app/hooks/useMedications';
 import colors from '@/app/theme/colors';
-import LogoutIcon from '@/app/assets/icons/logout-icon.svg';
-import AddIcon from '@/app/assets/icons/add-icon.svg';
 
-import MedicationItem from './components/MedicationItem/MedicationItem';
 import EmptyListComponent from './components/EmptyListComponent/EmptyListComponent';
+import MedicationItem from './components/MedicationItem/MedicationItem';
 
 const stylesheet = createStyleSheet((theme, runtime) => ({
-  root: {
-    alignItems: 'center',
-    backgroundColor: theme.app.background.primary,
-    flex: 1,
-    paddingTop: runtime.insets.top,
-    paddingHorizontal: 20
-  },
-  title: {
-    color: theme.app.text.primary,
-  },
-  backButton: {
-    width: 36,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#F7F7F7',
-    borderWidth: 1,
-    borderRadius: 36
-  },
-  header: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 35
-  },
   addButton: {
-    width: 48,
-    height: 48,
-    position: 'absolute',
-    bottom: 42,
-    right: 20,
+    alignItems: 'center',
     backgroundColor: theme.app.button.primary.background,
     borderRadius: 12,
-    alignItems: 'center',
+    bottom: 42,
+    height: 48,
     justifyContent: 'center',
+    position: 'absolute',
+    right: 20,
+    width: 48,
   },
-  medicationsContainer: {
-    width: '100%',
-    marginTop: 20,
+  backButton: {
+    alignItems: 'center',
+    borderColor: '#F7F7F7',
+    borderRadius: 36,
+    borderWidth: 1,
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
   },
   contentContainer: {
     flexGrow: 1,
     gap: 10,
-    paddingBottom: 42
+    paddingBottom: 42,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 35,
+    width: '100%',
   },
   loader: {
-    marginTop: 30
-  }
+    marginTop: 30,
+  },
+  medicationsContainer: {
+    marginTop: 20,
+    width: '100%',
+  },
+  root: {
+    alignItems: 'center',
+    backgroundColor: theme.app.background.primary,
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: runtime.insets.top,
+  },
+  title: {
+    color: theme.app.text.primary,
+  },
 }));
 
 const MedicationList: FC = () => {
@@ -81,22 +80,22 @@ const MedicationList: FC = () => {
           Medication List
         </Text>
         <TouchableOpacity style={styles.backButton}>
-          <LogoutIcon width={20} height={20} />
+          <LogoutIcon height={20} width={20} />
         </TouchableOpacity>
       </View>
       {isLoading ? (
         <ActivityIndicator color={colors.blue} style={styles.loader} />
       ) : (
-        <FlatList 
-          style={styles.medicationsContainer}
+        <FlatList
+          ListEmptyComponent={EmptyListComponent}
           contentContainerStyle={styles.contentContainer}
           data={medications}
           renderItem={({ item }) => <MedicationItem medication={item} />}
-          ListEmptyComponent={EmptyListComponent}
+          style={styles.medicationsContainer}
         />
       )}
       <TouchableOpacity style={styles.addButton} onPress={onAddPress}>
-        <AddIcon width={24} height={24} />
+        <AddIcon height={24} width={24} />
       </TouchableOpacity>
     </View>
   );

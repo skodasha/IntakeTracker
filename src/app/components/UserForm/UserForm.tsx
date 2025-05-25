@@ -1,37 +1,39 @@
+import { useForm } from 'react-hook-form';
 import { TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { useForm } from 'react-hook-form';
 
+import CircleWarningIcon from '@/app/assets/icons/circle-warning-icon.svg';
 import { Text } from '@/app/components';
 import Button from '@/app/components/Button';
 import FormField from '@/app/components/FormField/FormField';
 import { IUserRequest } from '@/app/interfaces/user.interface';
-import CircleWarningIcon from '@/app/assets/icons/circle-warning-icon.svg';
+
+import FullScreenLoader from '../FullScreenLoader';
 
 import { resolver } from './schema';
-import FullScreenLoader from '../FullScreenLoader';
 
 const stylesheet = createStyleSheet((theme) => ({
   contentContainer: {
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
-    flex: 1,
-    width: '100%'
+    width: '100%',
   },
-  root: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: theme.app.background.primary,
-    flex: 1,
-    padding: 20
+  errorContainer: {
+    backgroundColor: theme.app.background.lightRed,
+    borderRadius: 12,
+    marginTop: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 14.5,
+    width: '100%',
   },
-  nextButton: {
-    marginBottom: 30,
+  errorText: {
+    color: theme.app.text.error,
   },
   formFieldsContainer: {
-    width: '100%',
     gap: 14,
     marginTop: 20,
+    width: '100%',
   },
   link: {
     color: theme.app.text.link,
@@ -41,32 +43,43 @@ const stylesheet = createStyleSheet((theme) => ({
     gap: 8,
     marginTop: 30,
   },
-  errorContainer: {
-    backgroundColor: theme.app.background.lightRed,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14.5,
-    marginTop: 20,
-    width: '100%',
+  nextButton: {
+    marginBottom: 30,
   },
-  errorText: {
-    color: theme.app.text.error,
-  }
+  root: {
+    alignItems: 'center',
+    backgroundColor: theme.app.background.primary,
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 20,
+  },
 }));
 
 type UserFormPropsType = {
-  title: string;
-  linkTitle: string;
   linkDescription: string;
+  linkTitle: string;
   onLinkPress: () => void;
   onSubmit: (data: IUserRequest) => void;
+  title: string;
   error?: string;
   isLoading?: boolean;
 };
 
-const UserForm = ({ title, linkTitle, linkDescription, onSubmit, onLinkPress, error, isLoading }: UserFormPropsType) => {
+const UserForm = ({
+  error,
+  isLoading,
+  linkDescription,
+  linkTitle,
+  onLinkPress,
+  onSubmit,
+  title,
+}: UserFormPropsType) => {
   const { styles } = useStyles(stylesheet);
-  const { control, handleSubmit, formState: { errors } } = useForm<IUserRequest>({ resolver });
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<IUserRequest>({ resolver });
 
   return (
     <View style={styles.root}>
@@ -77,25 +90,27 @@ const UserForm = ({ title, linkTitle, linkDescription, onSubmit, onLinkPress, er
         </Text>
         <View style={styles.formFieldsContainer}>
           <FormField
-              title="Name"
-              name="email"
-              control={control}
-              error={errors.email?.message as string}
-              placeholder='Enter email'
-            />
-            <FormField
-              title="Password"
-              name='password'
-              control={control}
-              error={errors.password?.message as string}
-              placeholder='Enter password'
-              secureTextEntry
-            />
+            control={control}
+            error={errors.email?.message as string}
+            name="email"
+            placeholder="Enter email"
+            title="Name"
+          />
+          <FormField
+            secureTextEntry
+            control={control}
+            error={errors.password?.message as string}
+            name="password"
+            placeholder="Enter password"
+            title="Password"
+          />
         </View>
         {error && (
           <View style={styles.errorContainer}>
-            <CircleWarningIcon width={24} height={24} />
-            <Text fontSize={14} style={styles.errorText}>{error}</Text>
+            <CircleWarningIcon height={24} width={24} />
+            <Text fontSize={14} style={styles.errorText}>
+              {error}
+            </Text>
           </View>
         )}
         <View style={styles.linkContainer}>
@@ -105,7 +120,7 @@ const UserForm = ({ title, linkTitle, linkDescription, onSubmit, onLinkPress, er
           </TouchableOpacity>
         </View>
       </View>
-      <Button title='Next' onPress={handleSubmit(onSubmit)} style={styles.nextButton} />
+      <Button style={styles.nextButton} title="Next" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 };

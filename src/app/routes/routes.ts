@@ -4,6 +4,6 @@ export const AUTH_ROUTE = {
 } as const;
 
 export const MAIN_ROUTE = {
-  MEDICATION_LIST: 'MEDICATION_LIST',
   MEDICATION_INFO: 'MEDICATION_INFO',
+  MEDICATION_LIST: 'MEDICATION_LIST',
 } as const;

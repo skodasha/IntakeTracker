@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 interface IError {
   msg?: string;
@@ -6,8 +6,8 @@ interface IError {
 }
 
 export interface IApiError {
-  message?: string;
   errors?: IError[];
+  message?: string;
 }
 
 export interface CustomAxiosError extends AxiosError<IApiError> {

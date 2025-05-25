@@ -1,32 +1,40 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { IUser, IUserRequest } from '@/app/interfaces/user.interface';
 import authRepository from '@/app/repositories/api/auth';
-import userRepository from '@/app/repositories/api/user';
 import medicationRepository from '@/app/repositories/api/medication';
+import userRepository from '@/app/repositories/api/user';
 
 import { useApplicationContext } from './ApplicationContext';
 
 interface IUserContext {
   isLoading: boolean;
-  user: IUser | null;
-  isAuthenticated: boolean;
-  register: (data: IUserRequest) => Promise<void>;
   login: (data: IUserRequest) => Promise<void>;
   logout: () => void;
+  register: (data: IUserRequest) => Promise<void>;
+  user: IUser | null;
 }
 
 export const UserContext = createContext<IUserContext>({
   isLoading: false,
-  user: null,
-  isAuthenticated: false,
-  register: async () => {},
   login: async () => {},
   logout: () => {},
+  register: async () => {},
+  user: null,
 });
 
 const UserContextProvider = ({ children }: PropsWithChildren) => {
-  const { repositories: { storage } } = useApplicationContext();
+  const {
+    repositories: { storage },
+  } = useApplicationContext();
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,28 +55,30 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
     };
 
     init();
-  }, []);
+  }, [storage]);
 
-  const register = async (data: IUserRequest) => {
-    setIsLoading(true);
-    try {
+  const register = useCallback(
+    async (data: IUserRequest) => {
+      setIsLoading(true);
+
       const { accessToken } = await authRepository.register(data);
+
       await storage.setItem('access_token', accessToken);
       userRepository.setAccessToken(accessToken);
       medicationRepository.setAccessToken(accessToken);
-      
+
       const profileResponse = await userRepository.getCurrent();
       setUser(profileResponse);
-    } catch (error) {
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const login = async (data: IUserRequest) => {
-    setIsLoading(true);
-    try {
+      setIsLoading(false);
+    },
+    [storage]
+  );
+
+  const login = useCallback(
+    async (data: IUserRequest) => {
+      setIsLoading(true);
+
       const { accessToken } = await authRepository.login(data);
 
       await storage.setItem('access_token', accessToken);
@@ -77,30 +87,27 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
 
       const profileResponse = await userRepository.getCurrent();
       setUser(profileResponse);
-    } catch (error) {
-      throw error;
-    } finally {
       setIsLoading(false);
-    }
-  };
+    },
+    [storage]
+  );
 
-  const logout = () => {
+  const logout = useCallback(() => {
     storage.removeItem('access_token');
     userRepository.setAccessToken(null);
     medicationRepository.setAccessToken(null);
     setUser(null);
-  };
+  }, [storage]);
 
   const value = useMemo(
     () => ({
       isLoading,
-      user,
-      isAuthenticated: !!user,
-      register,
       login,
       logout,
+      register,
+      user,
     }),
-    [user, isLoading]
+    [user, isLoading, login, logout, register]
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

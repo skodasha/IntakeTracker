@@ -1,63 +1,71 @@
+import { Control, Controller } from 'react-hook-form';
 import { TextInput, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
-import { Control, Controller } from 'react-hook-form';
 
 import { Text } from '@/app/components';
 
 const stylesheet = createStyleSheet((theme) => ({
   container: {
+    gap: 8,
     width: '100%',
-    gap: 8
-  },
-  label: {
-    color: theme.app.text.secondary,
-  },
-  input: {
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12.5,
-    backgroundColor: theme.app.input.background,
-    fontSize: 16
   },
   error: {
     color: theme.app.text.error,
   },
+  input: {
+    backgroundColor: theme.app.input.background,
+    borderRadius: 12,
+    fontSize: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12.5,
+  },
+  label: {
+    color: theme.app.text.secondary,
+  },
 }));
 
 type FormFieldPropsType = {
-  name: string;
-  error: string;
   control: Control<any>;
+  error: string;
+  name: string;
   title: string;
+  keyboardType?: 'default' | 'numeric';
   placeholder?: string;
   secureTextEntry?: boolean;
-  keyboardType?: 'default' | 'numeric';
 };
 
-const FormField = ({ name, error, control, title, placeholder, secureTextEntry, keyboardType }: FormFieldPropsType) => {
+const FormField = ({
+  control,
+  error,
+  keyboardType,
+  name,
+  placeholder,
+  secureTextEntry,
+  title,
+}: FormFieldPropsType) => {
   const { styles } = useStyles(stylesheet);
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{title}</Text>
       <Controller
-        name={name}
         control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
+        name={name}
+        render={({ field: { onBlur, onChange, value } }) => (
           <TextInput
-            style={styles.input}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value?.toString()}
+            keyboardType={keyboardType}
             placeholder={placeholder}
             secureTextEntry={secureTextEntry}
-            keyboardType={keyboardType}
+            style={styles.input}
+            value={value?.toString()}
+            onBlur={onBlur}
+            onChangeText={onChange}
           />
         )}
       />
       {error && <Text style={styles.error}>{error}</Text>}
     </View>
-  )
-}
+  );
+};
 
 export default FormField;

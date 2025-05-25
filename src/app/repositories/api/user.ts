@@ -1,5 +1,6 @@
 import config from '@/app/config/config';
 import { IUserTO } from '@/app/interfaces/user.interface';
+
 import ApiRepository from './api';
 
 class UserRepository extends ApiRepository {

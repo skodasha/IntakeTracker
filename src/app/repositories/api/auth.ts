@@ -1,5 +1,6 @@
 import config from '@/app/config/config';
 import { IAccessToken, IUserRequest } from '@/app/interfaces/user.interface';
+
 import ApiRepository from './api';
 
 class AuthRepository extends ApiRepository {

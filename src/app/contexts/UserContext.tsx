@@ -3,6 +3,7 @@ import { PropsWithChildren, createContext, useContext, useEffect, useMemo, useSt
 import { IUser, IUserRequest } from '@/app/interfaces/user.interface';
 import authRepository from '@/app/repositories/api/auth';
 import userRepository from '@/app/repositories/api/user';
+import medicationRepository from '@/app/repositories/api/medication';
 
 import { useApplicationContext } from './ApplicationContext';
 
@@ -35,6 +36,7 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
       if (token) {
         try {
           userRepository.setAccessToken(token);
+          medicationRepository.setAccessToken(token);
           const profileResponse = await userRepository.getCurrent();
           setUser(profileResponse);
         } catch (error) {
@@ -51,9 +53,10 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
     try {
       const { accessToken } = await authRepository.register(data);
-      await storage.setItem('auth_token', accessToken);
+      await storage.setItem('access_token', accessToken);
       userRepository.setAccessToken(accessToken);
-
+      medicationRepository.setAccessToken(accessToken);
+      
       const profileResponse = await userRepository.getCurrent();
       setUser(profileResponse);
     } catch (error) {
@@ -67,8 +70,10 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
     setIsLoading(true);
     try {
       const { accessToken } = await authRepository.login(data);
-      await storage.setItem('auth_token', accessToken);
+
+      await storage.setItem('access_token', accessToken);
       userRepository.setAccessToken(accessToken);
+      medicationRepository.setAccessToken(accessToken);
 
       const profileResponse = await userRepository.getCurrent();
       setUser(profileResponse);
@@ -82,6 +87,7 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
   const logout = () => {
     storage.removeItem('access_token');
     userRepository.setAccessToken(null);
+    medicationRepository.setAccessToken(null);
     setUser(null);
   };
 

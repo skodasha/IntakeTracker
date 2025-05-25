@@ -7,13 +7,13 @@ class AuthRepository extends ApiRepository {
     super(config.api.url);
   }
 
-  public async register(props: IUserRequest): Promise<IAccessToken> {
-    const result = await this.http.post('/auth/register', props);
+  public async register(payload: IUserRequest): Promise<IAccessToken> {
+    const result = await this.http.post('/auth/register', payload);
     return result.data;
   }
 
-  public async login(props: IUserRequest): Promise<IAccessToken> {
-    const result = await this.http.post('/auth/login', props);
+  public async login(payload: IUserRequest): Promise<IAccessToken> {
+    const result = await this.http.post('/auth/login', payload);
     return result.data;
   }
 }

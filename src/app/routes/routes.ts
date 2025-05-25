@@ -5,4 +5,5 @@ export const AUTH_ROUTE = {
 
 export const MAIN_ROUTE = {
   MEDICATION_LIST: 'MEDICATION_LIST',
+  MEDICATION_INFO: 'MEDICATION_INFO',
 } as const;

@@ -3,8 +3,12 @@ import colors from '@/app/theme/colors';
 const theme = {
   background: {
     primary: colors.white,
+    secondary: colors.lightGreen,
     semiTransparent: colors.semiTransparent,
-    lightRed: colors.lightRed
+    lightRed: colors.lightRed,
+    lightGray: colors.lightGray,
+    darkGray: colors.darkGray,
+    green: colors.green
   },
   input: {
     background: colors.lightGray,

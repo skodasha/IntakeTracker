@@ -31,9 +31,10 @@ type FormFieldPropsType = {
   title: string;
   placeholder?: string;
   secureTextEntry?: boolean;
+  keyboardType?: 'default' | 'numeric';
 };
 
-const FormField = ({ name, error, control, title, placeholder, secureTextEntry }: FormFieldPropsType) => {
+const FormField = ({ name, error, control, title, placeholder, secureTextEntry, keyboardType }: FormFieldPropsType) => {
   const { styles } = useStyles(stylesheet);
 
   return (
@@ -47,9 +48,10 @@ const FormField = ({ name, error, control, title, placeholder, secureTextEntry }
             style={styles.input}
             onBlur={onBlur}
             onChangeText={onChange}
-            value={value}
+            value={value?.toString()}
             placeholder={placeholder}
             secureTextEntry={secureTextEntry}
+            keyboardType={keyboardType}
           />
         )}
       />

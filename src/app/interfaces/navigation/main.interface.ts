@@ -6,6 +6,7 @@ import { MAIN_ROUTE } from '@/app/routes/routes';
 // that can be passed as params and received further with useRoute hook
 export type MainStackParamList = {
   [MAIN_ROUTE.MEDICATION_LIST]: undefined;
+  [MAIN_ROUTE.MEDICATION_INFO]: { medicationId: string } | undefined;
 };
 
 export type MainScreenProps<T extends keyof MainStackParamList> = NativeStackScreenProps<

@@ -15,6 +15,7 @@ const MainNavigator = () => (
   >
     <MainStack.Group>
       <MainStack.Screen component={MainScreens.MedicationList} name={MAIN_ROUTE.MEDICATION_LIST} />
+      <MainStack.Screen component={MainScreens.MedicationInfo} name={MAIN_ROUTE.MEDICATION_INFO} />
     </MainStack.Group>
   </MainStack.Navigator>
 );

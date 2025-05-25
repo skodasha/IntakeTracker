@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { type FC } from 'react';
+import { useState, type FC } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -13,6 +13,7 @@ import { MAIN_ROUTE } from '@/app/routes/routes';
 import colors from '@/app/theme/colors';
 
 import MedicationForm from './components/MedicationForm';
+import { parseError } from '@/app/utils/parseError';
 
 const stylesheet = createStyleSheet((theme, runtime) => ({
   backButton: {
@@ -68,6 +69,7 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
 const MedicationInfo: FC = () => {
   const { styles } = useStyles(stylesheet);
   const navigation = useNavigation();
+  const [error, setError] = useState('');
   const route = useRoute<MainRouteProps<typeof MAIN_ROUTE.MEDICATION_INFO>>();
 
   const { medicationId } = route.params || {};
@@ -85,17 +87,24 @@ const MedicationInfo: FC = () => {
   const title = isEditMode ? 'Edit medication' : 'Add new medication';
   const buttonText = isEditMode ? 'Save' : 'Add medication';
 
-  const handleSubmit = (medication: MedicationType) => {
+  const handleSubmit = async (medication: MedicationType) => {
+    const onSuccess = () => navigation.goBack();
+    const onError = (err: Error) => setError(parseError(err));
+
     if (isEditMode) {
       updateMedication({
         id: medicationId,
         ...medication,
+      }, {
+        onSuccess,
+        onError
       });
     } else {
-      createMedication(medication);
+      createMedication(medication, {
+        onSuccess,
+        onError
+      });
     }
-
-    navigation.goBack();
   };
 
   const handleBackPress = () => navigation.goBack();
@@ -127,7 +136,7 @@ const MedicationInfo: FC = () => {
         {isLoading || isSubmitLoading ? (
           <ActivityIndicator color={colors.blue} />
         ) : (
-          <MedicationForm buttonText={buttonText} defaultValues={data} onSubmit={handleSubmit} />
+          <MedicationForm buttonText={buttonText} defaultValues={data} onSubmit={handleSubmit} error={error}/>
         )}
       </View>
     </View>

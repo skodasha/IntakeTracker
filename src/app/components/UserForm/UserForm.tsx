@@ -2,10 +2,7 @@ import { useForm } from 'react-hook-form';
 import { TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import CircleWarningIcon from '@/app/assets/icons/circle-warning-icon.svg';
-import { Text } from '@/app/components';
-import Button from '@/app/components/Button';
-import FormField from '@/app/components/FormField/FormField';
+import { Text, Button, FormField, ErrorMessage } from '@/app/components';
 import { IUserRequest } from '@/app/interfaces/user.interface';
 
 import FullScreenLoader from '../FullScreenLoader';
@@ -18,20 +15,6 @@ const stylesheet = createStyleSheet((theme) => ({
     flex: 1,
     justifyContent: 'center',
     width: '100%',
-  },
-  errorContainer: {
-    backgroundColor: theme.app.background.lightRed,
-    borderRadius: 12,
-    marginTop: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 14.5,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  errorText: {
-    color: theme.app.text.error,
   },
   formFieldsContainer: {
     gap: 14,
@@ -108,14 +91,7 @@ const UserForm = ({
             title="Password"
           />
         </View>
-        {error && (
-          <View style={styles.errorContainer}>
-            <CircleWarningIcon height={24} width={24} />
-            <Text fontSize={14} style={styles.errorText}>
-              {error}
-            </Text>
-          </View>
-        )}
+        <ErrorMessage message={error} />
         <View style={styles.linkContainer}>
           <Text>{linkDescription}</Text>
           <TouchableOpacity onPress={onLinkPress}>

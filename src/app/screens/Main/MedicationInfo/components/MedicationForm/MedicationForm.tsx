@@ -2,31 +2,20 @@ import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Text } from '@/app/components';
 import Button from '@/app/components/Button';
 import FormField from '@/app/components/FormField/FormField';
 import { MedicationType } from '@/app/interfaces/medication.interface';
 
 import { resolver } from './schema';
+import { ErrorMessage } from '@/app/components';
 
-const stylesheet = createStyleSheet((theme) => ({
+const stylesheet = createStyleSheet(() => ({
   button: {
     marginBottom: 30,
   },
   contentContainer: {
     flex: 1,
     width: '100%',
-  },
-  errorContainer: {
-    backgroundColor: theme.app.background.lightRed,
-    borderRadius: 12,
-    marginTop: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 14.5,
-    width: '100%',
-  },
-  errorText: {
-    color: theme.app.text.error,
   },
   formFieldsContainer: {
     gap: 14,
@@ -92,13 +81,7 @@ const MedicationForm = ({
             title="Target amount"
           />
         </View>
-        {error && (
-          <View style={styles.errorContainer}>
-            <Text fontSize={14} style={styles.errorText}>
-              {error}
-            </Text>
-          </View>
-        )}
+        <ErrorMessage message={error} />
       </View>
       <Button style={styles.button} title={buttonText} onPress={handleSubmit(onSubmit)} />
     </View>

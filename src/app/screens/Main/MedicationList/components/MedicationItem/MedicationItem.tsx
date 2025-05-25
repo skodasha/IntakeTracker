@@ -10,6 +10,7 @@ import { Text } from '@/app/components';
 import { IMedication } from '@/app/interfaces/medication.interface';
 import { MainNavigationProps } from '@/app/interfaces/navigation/main.interface';
 import { MAIN_ROUTE } from '@/app/routes/routes';
+import { useMedications } from '@/app/hooks/useMedications';
 
 const stylesheet = createStyleSheet((theme) => ({
   amount: {
@@ -91,6 +92,9 @@ const stylesheet = createStyleSheet((theme) => ({
     flexDirection: 'row',
     gap: 8,
   },
+  disabledButton: {
+    opacity: 0.4
+  }
 }));
 
 type MedicationItemPropsType = {
@@ -100,11 +104,33 @@ type MedicationItemPropsType = {
 const MedicationItem = ({ medication }: MedicationItemPropsType) => {
   const { styles } = useStyles(stylesheet);
   const navigation = useNavigation<MainNavigationProps<typeof MAIN_ROUTE.MEDICATION_INFO>>();
+  const { updateMedication } = useMedications();
 
   const isFulfilledMedication = medication.initialAmount === medication.targetAmount;
+  const isDisabledReduce = !medication.initialAmount;
+  const isDisabledIncrease = medication.initialAmount === medication.targetAmount;
 
-  const onEditPress = () =>
+  const handleEditPress = () =>
     navigation.navigate(MAIN_ROUTE.MEDICATION_INFO, { medicationId: medication.id });
+
+  const handleReduceAmountPress = () => {
+    if (!medication.initialAmount) return;
+
+    updateMedication({
+      ...medication,
+      initialAmount: medication.initialAmount - 1,
+    })
+  };
+
+  const handleIncreaseAmountPress = () => {
+    if (medication.initialAmount === medication.targetAmount) return;
+    const initialAmount = medication.initialAmount ? medication.initialAmount + 1 : 1;
+
+    updateMedication({
+      ...medication,
+      initialAmount,
+    })
+  };
 
   return (
     <View style={[styles.root, isFulfilledMedication && styles.fulfilled]}>
@@ -124,13 +150,13 @@ const MedicationItem = ({ medication }: MedicationItemPropsType) => {
         </Text>
         <View style={styles.amountContainer}>
           <View style={styles.counterRow}>
-            <TouchableOpacity style={styles.counterButton}>
+            <TouchableOpacity style={[styles.counterButton, isDisabledReduce && styles.disabledButton]} onPress={handleReduceAmountPress} disabled={isDisabledReduce}>
               <MinusIcon />
             </TouchableOpacity>
             <View style={styles.divider} />
             <Text style={styles.amount}>{medication.initialAmount}</Text>
             <View style={styles.divider} />
-            <TouchableOpacity style={styles.counterButton}>
+            <TouchableOpacity style={[styles.counterButton, isDisabledIncrease && styles.disabledButton]} onPress={handleIncreaseAmountPress} disabled={isDisabledIncrease}>
               <PlusIcon />
             </TouchableOpacity>
           </View>
@@ -139,7 +165,7 @@ const MedicationItem = ({ medication }: MedicationItemPropsType) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.editButton} onPress={onEditPress}>
+      <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
         <EditIcon height={20} width={20} />
       </TouchableOpacity>
     </View>

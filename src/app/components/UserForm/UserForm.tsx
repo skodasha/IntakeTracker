@@ -26,6 +26,9 @@ const stylesheet = createStyleSheet((theme) => ({
     paddingHorizontal: 16,
     paddingVertical: 14.5,
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8
   },
   errorText: {
     color: theme.app.text.error,

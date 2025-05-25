@@ -60,17 +60,18 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
   const register = useCallback(
     async (data: IUserRequest) => {
       setIsLoading(true);
+      try {
+        const { accessToken } = await authRepository.register(data);
 
-      const { accessToken } = await authRepository.register(data);
-
-      await storage.setItem('access_token', accessToken);
-      userRepository.setAccessToken(accessToken);
-      medicationRepository.setAccessToken(accessToken);
-
-      const profileResponse = await userRepository.getCurrent();
-      setUser(profileResponse);
-
-      setIsLoading(false);
+        await storage.setItem('access_token', accessToken);
+        userRepository.setAccessToken(accessToken);
+        medicationRepository.setAccessToken(accessToken);
+  
+        const profileResponse = await userRepository.getCurrent();
+        setUser(profileResponse);
+      } finally {
+        setIsLoading(false);
+      }
     },
     [storage]
   );
@@ -78,16 +79,18 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
   const login = useCallback(
     async (data: IUserRequest) => {
       setIsLoading(true);
+      try {
+        const { accessToken } = await authRepository.login(data);
 
-      const { accessToken } = await authRepository.login(data);
-
-      await storage.setItem('access_token', accessToken);
-      userRepository.setAccessToken(accessToken);
-      medicationRepository.setAccessToken(accessToken);
-
-      const profileResponse = await userRepository.getCurrent();
-      setUser(profileResponse);
-      setIsLoading(false);
+        await storage.setItem('access_token', accessToken);
+        userRepository.setAccessToken(accessToken);
+        medicationRepository.setAccessToken(accessToken);
+  
+        const profileResponse = await userRepository.getCurrent();
+        setUser(profileResponse);
+      } finally {
+        setIsLoading(false);
+      }
     },
     [storage]
   );

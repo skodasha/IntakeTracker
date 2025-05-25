@@ -3,6 +3,7 @@ import { type FC } from 'react';
 import { ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
+import { useUserContext } from '@/app/contexts/UserContext';
 import AddIcon from '@/app/assets/icons/add-icon.svg';
 import LogoutIcon from '@/app/assets/icons/logout-icon.svg';
 import { Text } from '@/app/components';
@@ -66,6 +67,7 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
 }));
 
 const MedicationList: FC = () => {
+  const { logout } = useUserContext();
   const { styles } = useStyles(stylesheet);
   const navigation = useNavigation<MainNavigationProps<typeof MAIN_ROUTE.MEDICATION_INFO>>();
 
@@ -79,7 +81,7 @@ const MedicationList: FC = () => {
         <Text fontSize={24} fontWeight="500" lineHeight={32} style={styles.title}>
           Medication List
         </Text>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={logout}>
           <LogoutIcon height={20} width={20} />
         </TouchableOpacity>
       </View>

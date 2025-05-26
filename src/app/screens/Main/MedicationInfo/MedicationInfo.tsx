@@ -9,11 +9,11 @@ import { Text } from '@/app/components';
 import FullScreenLoader from '@/app/components/FullScreenLoader';
 import { useConfirmModal } from '@/app/hooks/useConfirmModal';
 import { useMedicationById, useMedications } from '@/app/hooks/useMedications';
+import { ErrorObjectType } from '@/app/interfaces/error.interface';
 import { MedicationType } from '@/app/interfaces/medication.interface';
 import { MainRouteProps } from '@/app/interfaces/navigation/main.interface';
 import { MAIN_ROUTE } from '@/app/routes/routes';
 import colors from '@/app/theme/colors';
-import { parseError } from '@/app/utils/parseError';
 
 import MedicationForm from './components/MedicationForm';
 
@@ -74,7 +74,7 @@ const MedicationInfo: FC = () => {
   const route = useRoute<MainRouteProps<typeof MAIN_ROUTE.MEDICATION_INFO>>();
   const { ConfirmModal, openConfirm } = useConfirmModal();
 
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<ErrorObjectType>();
 
   const { medicationId } = route.params || {};
 
@@ -95,7 +95,7 @@ const MedicationInfo: FC = () => {
   const buttonText = isEditMode ? 'Save' : 'Add medication';
 
   const onSuccess = () => navigation.goBack();
-  const onError = (err: Error) => setError(parseError(err));
+  const onError = (err: unknown) => setErrors(err as ErrorObjectType);
 
   const handleSubmit = async (medication: MedicationType) => {
     if (isEditMode) {
@@ -122,14 +122,10 @@ const MedicationInfo: FC = () => {
     openConfirm();
   };
   const handleConfirmDeletePress = () => {
-    if (medicationId) {
-      deleteMedication(medicationId, {
-        onError,
-        onSuccess,
-      });
-    } else {
-      setError('Something went wrong');
-    }
+    deleteMedication(medicationId!, {
+      onError,
+      onSuccess,
+    });
   };
 
   return (
@@ -155,7 +151,7 @@ const MedicationInfo: FC = () => {
           <MedicationForm
             buttonText={buttonText}
             defaultValues={data}
-            error={error}
+            errors={errors}
             onSubmit={handleSubmit}
           />
         )}

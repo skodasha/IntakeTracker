@@ -22,14 +22,18 @@ const stylesheet = createStyleSheet((theme) => ({
   label: {
     color: theme.app.text.secondary,
   },
+  multiline: {
+    height: 138,
+  },
 }));
 
 type FormFieldPropsType<T extends FieldValues> = {
   control: Control<T>;
-  error: string;
   name: Path<T>;
   title: string;
+  error?: string;
   keyboardType?: 'default' | 'numeric';
+  multiline?: boolean;
   placeholder?: string;
   secureTextEntry?: boolean;
 };
@@ -38,6 +42,7 @@ const FormField = <T extends FieldValues>({
   control,
   error,
   keyboardType,
+  multiline,
   name,
   placeholder,
   secureTextEntry,
@@ -54,9 +59,11 @@ const FormField = <T extends FieldValues>({
         render={({ field: { onBlur, onChange, value } }) => (
           <TextInput
             keyboardType={keyboardType}
+            multiline={multiline}
+            numberOfLines={6}
             placeholder={placeholder}
             secureTextEntry={secureTextEntry}
-            style={styles.input}
+            style={[styles.input, multiline && styles.multiline]}
             value={value?.toString()}
             onBlur={onBlur}
             onChangeText={onChange}

@@ -1,15 +1,19 @@
 import { AxiosError } from 'axios';
 
 interface IError {
-  msg?: string;
-  param?: string;
+  msg: string;
+  path: string;
 }
 
-export interface IApiError {
+interface IApiError {
   errors?: IError[];
   message?: string;
 }
 
-export interface CustomAxiosError extends AxiosError<IApiError> {
-  formattedMessage?: string;
-}
+export type CustomAxiosError = AxiosError<IApiError>;
+
+export type ErrorObjectType = {
+  [field: string]: {
+    message: string;
+  };
+};

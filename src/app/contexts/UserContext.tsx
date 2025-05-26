@@ -10,8 +10,8 @@ import {
 
 import { IUser, IUserRequest } from '@/app/interfaces/user.interface';
 import authRepository from '@/app/repositories/api/auth';
-import medicationRepository from '@/app/repositories/api/medication';
 import userRepository from '@/app/repositories/api/user';
+import TokenService from '@/app/services/token.service';
 
 import { useApplicationContext } from './ApplicationContext';
 
@@ -43,8 +43,8 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
       const token = storage.getItem('access_token');
       if (token) {
         try {
-          userRepository.setAccessToken(token);
-          medicationRepository.setAccessToken(token);
+          TokenService.setAccessToken(token);
+
           const profileResponse = await userRepository.getCurrent();
           setUser(profileResponse);
         } catch (error) {
@@ -63,9 +63,8 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
       try {
         const { accessToken } = await authRepository.register(data);
 
-        await storage.setItem('access_token', accessToken);
-        userRepository.setAccessToken(accessToken);
-        medicationRepository.setAccessToken(accessToken);
+        storage.setItem('access_token', accessToken);
+        TokenService.setAccessToken(accessToken);
 
         const profileResponse = await userRepository.getCurrent();
         setUser(profileResponse);
@@ -82,9 +81,8 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
       try {
         const { accessToken } = await authRepository.login(data);
 
-        await storage.setItem('access_token', accessToken);
-        userRepository.setAccessToken(accessToken);
-        medicationRepository.setAccessToken(accessToken);
+        storage.setItem('access_token', accessToken);
+        TokenService.setAccessToken(accessToken);
 
         const profileResponse = await userRepository.getCurrent();
         setUser(profileResponse);
@@ -97,8 +95,7 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
 
   const logout = useCallback(() => {
     storage.removeItem('access_token');
-    userRepository.setAccessToken(null);
-    medicationRepository.setAccessToken(null);
+    TokenService.setAccessToken(null);
     setUser(null);
   }, [storage]);
 

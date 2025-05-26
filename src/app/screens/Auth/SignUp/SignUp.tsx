@@ -3,21 +3,21 @@ import { useState, type FC } from 'react';
 
 import UserForm from '@/app/components/UserForm';
 import { useUserContext } from '@/app/contexts/UserContext';
+import { ErrorObjectType } from '@/app/interfaces/error.interface';
 import { AuthNavigationProps } from '@/app/interfaces/navigation/auth.interface';
 import { IUserRequest } from '@/app/interfaces/user.interface';
 import { AUTH_ROUTE } from '@/app/routes/routes';
-import { parseError } from '@/app/utils/parseError';
 
 const SignUp: FC = () => {
   const { isLoading, register } = useUserContext();
-  const [error, setError] = useState<string>();
+  const [errors, setErrors] = useState<ErrorObjectType>();
   const navigation = useNavigation<AuthNavigationProps<typeof AUTH_ROUTE.SIGN_IN>>();
 
   const onSubmit = async (data: IUserRequest) => {
     try {
       await register(data);
     } catch (err) {
-      setError(parseError(err));
+      setErrors(err as ErrorObjectType);
     }
   };
 
@@ -25,7 +25,7 @@ const SignUp: FC = () => {
 
   return (
     <UserForm
-      error={error}
+      error={errors?.error?.message}
       isLoading={isLoading}
       linkDescription="I already have an account"
       linkTitle="Sign in"

@@ -21,6 +21,7 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
     backgroundColor: theme.app.button.primary.background,
     borderRadius: 12,
     bottom: 42,
+    boxShadow: '4px 5px 6px 0px #2F5D8E1A',
     height: 48,
     justifyContent: 'center',
     position: 'absolute',

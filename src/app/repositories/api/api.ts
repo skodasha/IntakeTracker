@@ -1,12 +1,11 @@
 import { AxiosResponse } from 'axios';
 
-import { CustomAxiosError } from '@/app/interfaces/error.interface';
 import HttpRepository from '@/app/repositories/http';
+import TokenService from '@/app/services/token.service';
+import { parseError } from '@/app/utils/parseError';
 
 class ApiRepository {
   public http: HttpRepository;
-
-  private accessToken: string | null = null;
 
   constructor(baseUrl: string) {
     this.http = new HttpRepository(baseUrl);
@@ -15,9 +14,10 @@ class ApiRepository {
       // eslint-disable-next-line no-param-reassign
       axiosConfig.headers = axiosConfig.headers || {};
 
-      if (this.accessToken) {
+      const token = TokenService.getAccessToken();
+      if (token) {
         // eslint-disable-next-line no-param-reassign
-        axiosConfig.headers.Authorization = `Bearer ${this.accessToken}`;
+        axiosConfig.headers.Authorization = `Bearer ${token}`;
       }
 
       return axiosConfig;
@@ -25,27 +25,8 @@ class ApiRepository {
 
     this.http.addResponseInterceptor(
       (response: AxiosResponse) => response,
-      (error) => {
-        const apiError = error as CustomAxiosError;
-        const apiErrorData = apiError?.response?.data;
-
-        if (apiErrorData?.errors?.length) {
-          const formattedErrors = apiErrorData.errors.map((err) => err.msg).join('\n');
-
-          apiError.formattedMessage = formattedErrors;
-        } else if (apiErrorData?.message) {
-          apiError.formattedMessage = apiErrorData.message;
-        } else {
-          apiError.formattedMessage = 'Something went wrong';
-        }
-
-        return Promise.reject(apiError);
-      }
+      (error) => Promise.reject(parseError(error))
     );
-  }
-
-  public setAccessToken(token: string | null) {
-    this.accessToken = token;
   }
 }
 

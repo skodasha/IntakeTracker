@@ -1,59 +1,38 @@
 import { useNavigation } from '@react-navigation/native';
-import { type FC } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+import { useState, type FC } from 'react';
 
-import { Text } from '@/app/components';
+import UserForm from '@/app/components/UserForm';
+import { useUserContext } from '@/app/contexts/UserContext';
+import { ErrorObjectType } from '@/app/interfaces/error.interface';
 import { AuthNavigationProps } from '@/app/interfaces/navigation/auth.interface';
+import { IUserRequest } from '@/app/interfaces/user.interface';
 import { AUTH_ROUTE } from '@/app/routes/routes';
 
-const stylesheet = createStyleSheet((theme, runtime) => ({
-  button: {
-    alignItems: 'center',
-    backgroundColor: theme.app.button.primary.background,
-    borderRadius: 15,
-    marginTop: 10,
-    padding: 15,
-    width: '50%',
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  contentContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  root: {
-    alignItems: 'center',
-    backgroundColor: theme.app.background.primary,
-    flex: 1,
-    paddingTop: runtime.insets.top,
-  },
-  title: {
-    color: theme.app.text.primary,
-  },
-}));
-
 const SignUp: FC = () => {
-  const { styles } = useStyles(stylesheet);
-  const navigation = useNavigation<AuthNavigationProps<typeof AUTH_ROUTE.SIGN_UP>>();
+  const { isLoading, register } = useUserContext();
+  const [errors, setErrors] = useState<ErrorObjectType>();
+  const navigation = useNavigation<AuthNavigationProps<typeof AUTH_ROUTE.SIGN_IN>>();
+
+  const handleSubmit = async (data: IUserRequest) => {
+    try {
+      await register(data);
+    } catch (err) {
+      setErrors(err as ErrorObjectType);
+    }
+  };
+
+  const handleLinkPress = () => navigation.navigate(AUTH_ROUTE.SIGN_IN);
 
   return (
-    <View style={styles.root}>
-      <Text fontSize={24} fontWeight="500" lineHeight={32} style={styles.title}>
-        Sign up
-      </Text>
-      <View style={styles.contentContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate(AUTH_ROUTE.SIGN_IN)}
-        >
-          <Text style={styles.buttonText}>I already have an account</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <UserForm
+      error={errors?.error?.message}
+      isLoading={isLoading}
+      linkDescription="I already have an account"
+      linkTitle="Sign in"
+      title="Sign up"
+      onLinkPress={handleLinkPress}
+      onSubmit={handleSubmit}
+    />
   );
 };
 

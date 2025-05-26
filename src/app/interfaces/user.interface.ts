@@ -4,3 +4,12 @@ export interface IUserTO {
 }
 
 export type IUser = IUserTO;
+
+export interface IUserRequest {
+  email: string;
+  password: string;
+}
+
+export interface IAccessToken {
+  accessToken: string;
+}

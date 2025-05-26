@@ -2,9 +2,12 @@ import Config from 'react-native-config';
 
 import { version } from '../../../package.json';
 
-const { STORAGE_ENCRYPTION_KEY, STORAGE_ID } = Config;
+const { API_URL, STORAGE_ENCRYPTION_KEY, STORAGE_ID } = Config;
 
 const config = {
+  api: {
+    url: API_URL || '',
+  },
   app: {
     version,
   },

@@ -6,14 +6,16 @@ import { createStyleSheet, useStyles } from 'react-native-unistyles';
 import BackIcon from '@/app/assets/icons/back-icon.svg';
 import BinIcon from '@/app/assets/icons/bin-icon.svg';
 import { Text } from '@/app/components';
+import FullScreenLoader from '@/app/components/FullScreenLoader';
+import { useConfirmModal } from '@/app/hooks/useConfirmModal';
 import { useMedicationById, useMedications } from '@/app/hooks/useMedications';
 import { MedicationType } from '@/app/interfaces/medication.interface';
 import { MainRouteProps } from '@/app/interfaces/navigation/main.interface';
 import { MAIN_ROUTE } from '@/app/routes/routes';
 import colors from '@/app/theme/colors';
+import { parseError } from '@/app/utils/parseError';
 
 import MedicationForm from './components/MedicationForm';
-import { parseError } from '@/app/utils/parseError';
 
 const stylesheet = createStyleSheet((theme, runtime) => ({
   backButton: {
@@ -69,53 +71,70 @@ const stylesheet = createStyleSheet((theme, runtime) => ({
 const MedicationInfo: FC = () => {
   const { styles } = useStyles(stylesheet);
   const navigation = useNavigation();
-  const [error, setError] = useState('');
   const route = useRoute<MainRouteProps<typeof MAIN_ROUTE.MEDICATION_INFO>>();
+  const { ConfirmModal, openConfirm } = useConfirmModal();
+
+  const [error, setError] = useState('');
 
   const { medicationId } = route.params || {};
 
   const {
     createMedication,
     deleteMedication,
-    isLoading: isSubmitLoading,
+    isCreating,
+    isDeleting,
+    isUpdating,
     updateMedication,
   } = useMedications();
   const { data, isLoading } = useMedicationById(medicationId);
 
+  const isSubmitLoading = isCreating || isUpdating || isDeleting;
   const isEditMode = !!medicationId;
 
   const title = isEditMode ? 'Edit medication' : 'Add new medication';
   const buttonText = isEditMode ? 'Save' : 'Add medication';
 
-  const handleSubmit = async (medication: MedicationType) => {
-    const onSuccess = () => navigation.goBack();
-    const onError = (err: Error) => setError(parseError(err));
+  const onSuccess = () => navigation.goBack();
+  const onError = (err: Error) => setError(parseError(err));
 
+  const handleSubmit = async (medication: MedicationType) => {
     if (isEditMode) {
-      updateMedication({
-        id: medicationId,
-        ...medication,
-      }, {
-        onSuccess,
-        onError
-      });
+      updateMedication(
+        {
+          id: medicationId,
+          ...medication,
+        },
+        {
+          onError,
+          onSuccess,
+        }
+      );
     } else {
       createMedication(medication, {
+        onError,
         onSuccess,
-        onError
       });
     }
   };
 
   const handleBackPress = () => navigation.goBack();
-
-  const handleDeletePress = (id: string) => {
-    deleteMedication(id);
-    navigation.goBack();
+  const handleOpenConfirm = () => {
+    openConfirm();
+  };
+  const handleConfirmDeletePress = () => {
+    if (medicationId) {
+      deleteMedication(medicationId, {
+        onError,
+        onSuccess,
+      });
+    } else {
+      setError('Something went wrong');
+    }
   };
 
   return (
     <View style={styles.root}>
+      {isSubmitLoading && <FullScreenLoader />}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
           <BackIcon />
@@ -124,21 +143,28 @@ const MedicationInfo: FC = () => {
           {title}
         </Text>
         {isEditMode && (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => handleDeletePress(medicationId)}
-          >
+          <TouchableOpacity style={styles.deleteButton} onPress={handleOpenConfirm}>
             <BinIcon />
           </TouchableOpacity>
         )}
       </View>
       <View style={styles.formContainer}>
-        {isLoading || isSubmitLoading ? (
+        {isLoading ? (
           <ActivityIndicator color={colors.blue} />
         ) : (
-          <MedicationForm buttonText={buttonText} defaultValues={data} onSubmit={handleSubmit} error={error}/>
+          <MedicationForm
+            buttonText={buttonText}
+            defaultValues={data}
+            error={error}
+            onSubmit={handleSubmit}
+          />
         )}
       </View>
+      <ConfirmModal
+        confirmBtnTitle="Delete medication"
+        title="Are you sure you want to delete this medication?"
+        onConfirm={handleConfirmDeletePress}
+      />
     </View>
   );
 };

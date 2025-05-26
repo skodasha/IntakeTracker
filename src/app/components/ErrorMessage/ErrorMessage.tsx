@@ -6,19 +6,19 @@ import { Text } from '@/app/components';
 
 const stylesheet = createStyleSheet((theme) => ({
   errorContainer: {
+    alignItems: 'center',
     backgroundColor: theme.app.background.lightRed,
     borderRadius: 12,
+    flexDirection: 'row',
+    gap: 8,
     marginTop: 20,
     paddingHorizontal: 16,
     paddingVertical: 14.5,
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
   },
   errorText: {
     color: theme.app.text.error,
-    width: '90%'
+    width: '90%',
   },
 }));
 
@@ -31,15 +31,15 @@ const ErrorMessage = ({ message }: ErrorMessagePropsType) => {
 
   if (!message) {
     return null;
-  };
-  
+  }
+
   return (
     <View style={styles.errorContainer}>
-            <CircleWarningIcon height={24} width={24} />
-            <Text fontSize={14} style={styles.errorText}>
-              {message}
-            </Text>
-          </View>
+      <CircleWarningIcon height={24} width={24} />
+      <Text fontSize={14} style={styles.errorText}>
+        {message}
+      </Text>
+    </View>
   );
 };
 

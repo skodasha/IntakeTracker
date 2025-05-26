@@ -2,9 +2,12 @@ import { useForm } from 'react-hook-form';
 import { TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { Text, Button, FormField, ErrorMessage } from '@/app/components';
+import { Text } from '@/app/components';
 import { IUserRequest } from '@/app/interfaces/user.interface';
 
+import Button from '../Button';
+import ErrorMessage from '../ErrorMessage';
+import FormField from '../FormField';
 import FullScreenLoader from '../FullScreenLoader';
 
 import { resolver } from './schema';
@@ -75,14 +78,14 @@ const UserForm = ({
           {title}
         </Text>
         <View style={styles.formFieldsContainer}>
-          <FormField
+          <FormField<IUserRequest>
             control={control}
             error={errors.email?.message as string}
             name="email"
             placeholder="Enter email"
             title="Name"
           />
-          <FormField
+          <FormField<IUserRequest>
             secureTextEntry
             control={control}
             error={errors.password?.message as string}

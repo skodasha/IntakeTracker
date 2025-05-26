@@ -11,6 +11,9 @@ const theme = {
     semiTransparent: colors.semiTransparent,
   },
   button: {
+    error: {
+      background: colors.red,
+    },
     primary: {
       background: colors.blue,
       textColor: colors.white,

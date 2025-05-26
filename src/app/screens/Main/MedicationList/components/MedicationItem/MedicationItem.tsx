@@ -7,10 +7,10 @@ import MinusIcon from '@/app/assets/icons/minus-icon.svg';
 import FulfilledIcon from '@/app/assets/icons/ok-icon.svg';
 import PlusIcon from '@/app/assets/icons/plus-icon.svg';
 import { Text } from '@/app/components';
+import { useMedications } from '@/app/hooks/useMedications';
 import { IMedication } from '@/app/interfaces/medication.interface';
 import { MainNavigationProps } from '@/app/interfaces/navigation/main.interface';
 import { MAIN_ROUTE } from '@/app/routes/routes';
-import { useMedications } from '@/app/hooks/useMedications';
 
 const stylesheet = createStyleSheet((theme) => ({
   amount: {
@@ -48,6 +48,9 @@ const stylesheet = createStyleSheet((theme) => ({
     marginBottom: 10,
     marginTop: 4,
     minHeight: 120,
+  },
+  disabledButton: {
+    opacity: 0.4,
   },
   divider: {
     backgroundColor: '#D9D9D9',
@@ -92,9 +95,6 @@ const stylesheet = createStyleSheet((theme) => ({
     flexDirection: 'row',
     gap: 8,
   },
-  disabledButton: {
-    opacity: 0.4
-  }
 }));
 
 type MedicationItemPropsType = {
@@ -119,7 +119,7 @@ const MedicationItem = ({ medication }: MedicationItemPropsType) => {
     updateMedication({
       ...medication,
       initialAmount: medication.initialAmount - 1,
-    })
+    });
   };
 
   const handleIncreaseAmountPress = () => {
@@ -129,7 +129,7 @@ const MedicationItem = ({ medication }: MedicationItemPropsType) => {
     updateMedication({
       ...medication,
       initialAmount,
-    })
+    });
   };
 
   return (
@@ -150,13 +150,21 @@ const MedicationItem = ({ medication }: MedicationItemPropsType) => {
         </Text>
         <View style={styles.amountContainer}>
           <View style={styles.counterRow}>
-            <TouchableOpacity style={[styles.counterButton, isDisabledReduce && styles.disabledButton]} onPress={handleReduceAmountPress} disabled={isDisabledReduce}>
+            <TouchableOpacity
+              disabled={isDisabledReduce}
+              style={[styles.counterButton, isDisabledReduce && styles.disabledButton]}
+              onPress={handleReduceAmountPress}
+            >
               <MinusIcon />
             </TouchableOpacity>
             <View style={styles.divider} />
             <Text style={styles.amount}>{medication.initialAmount}</Text>
             <View style={styles.divider} />
-            <TouchableOpacity style={[styles.counterButton, isDisabledIncrease && styles.disabledButton]} onPress={handleIncreaseAmountPress} disabled={isDisabledIncrease}>
+            <TouchableOpacity
+              disabled={isDisabledIncrease}
+              style={[styles.counterButton, isDisabledIncrease && styles.disabledButton]}
+              onPress={handleIncreaseAmountPress}
+            >
               <PlusIcon />
             </TouchableOpacity>
           </View>

@@ -1,4 +1,4 @@
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { TextInput, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
@@ -24,17 +24,17 @@ const stylesheet = createStyleSheet((theme) => ({
   },
 }));
 
-type FormFieldPropsType = {
-  control: Control<any>;
+type FormFieldPropsType<T extends FieldValues> = {
+  control: Control<T>;
   error: string;
-  name: string;
+  name: Path<T>;
   title: string;
   keyboardType?: 'default' | 'numeric';
   placeholder?: string;
   secureTextEntry?: boolean;
 };
 
-const FormField = ({
+const FormField = <T extends FieldValues>({
   control,
   error,
   keyboardType,
@@ -42,7 +42,7 @@ const FormField = ({
   placeholder,
   secureTextEntry,
   title,
-}: FormFieldPropsType) => {
+}: FormFieldPropsType<T>) => {
   const { styles } = useStyles(stylesheet);
 
   return (

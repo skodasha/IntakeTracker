@@ -3,11 +3,11 @@ import { View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import Button from '@/app/components/Button';
+import ErrorMessage from '@/app/components/ErrorMessage';
 import FormField from '@/app/components/FormField/FormField';
 import { MedicationType } from '@/app/interfaces/medication.interface';
 
 import { resolver } from './schema';
-import { ErrorMessage } from '@/app/components';
 
 const stylesheet = createStyleSheet(() => ({
   button: {
@@ -51,21 +51,21 @@ const MedicationForm = ({
     <View style={styles.root}>
       <View style={styles.contentContainer}>
         <View style={styles.formFieldsContainer}>
-          <FormField
+          <FormField<MedicationType>
             control={control}
             error={errors.name?.message as string}
             name="name"
             placeholder="Enter name"
             title="Name"
           />
-          <FormField
+          <FormField<MedicationType>
             control={control}
             error={errors.description?.message as string}
             name="description"
             placeholder="Enter description"
             title="Description"
           />
-          <FormField
+          <FormField<MedicationType>
             control={control}
             error={errors.initialAmount?.message as string}
             keyboardType="numeric"
@@ -73,7 +73,7 @@ const MedicationForm = ({
             placeholder="Enter initial amount"
             title="Initial amount"
           />
-          <FormField
+          <FormField<MedicationType>
             control={control}
             error={errors.targetAmount?.message as string}
             name="targetAmount"

@@ -66,7 +66,7 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
         await storage.setItem('access_token', accessToken);
         userRepository.setAccessToken(accessToken);
         medicationRepository.setAccessToken(accessToken);
-  
+
         const profileResponse = await userRepository.getCurrent();
         setUser(profileResponse);
       } finally {
@@ -85,7 +85,7 @@ const UserContextProvider = ({ children }: PropsWithChildren) => {
         await storage.setItem('access_token', accessToken);
         userRepository.setAccessToken(accessToken);
         medicationRepository.setAccessToken(accessToken);
-  
+
         const profileResponse = await userRepository.getCurrent();
         setUser(profileResponse);
       } finally {

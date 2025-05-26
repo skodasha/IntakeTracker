@@ -33,6 +33,10 @@ export const useMedications = () => {
     ...medicationsQuery,
     createMedication: createMedicationMutation.mutate,
     deleteMedication: deleteMedicationMutation.mutate,
+    isCreating: createMedicationMutation.isPending,
+
+    isDeleting: deleteMedicationMutation.isPending,
+    isUpdating: updateMedicationMutation.isPending,
     updateMedication: updateMedicationMutation.mutate,
   };
 };

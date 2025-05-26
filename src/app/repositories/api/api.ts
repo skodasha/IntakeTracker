@@ -12,9 +12,11 @@ class ApiRepository {
     this.http = new HttpRepository(baseUrl);
 
     this.http.addRequestInterceptor((axiosConfig) => {
+      // eslint-disable-next-line no-param-reassign
       axiosConfig.headers = axiosConfig.headers || {};
 
       if (this.accessToken) {
+        // eslint-disable-next-line no-param-reassign
         axiosConfig.headers.Authorization = `Bearer ${this.accessToken}`;
       }
 

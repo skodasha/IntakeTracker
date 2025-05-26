@@ -3,10 +3,10 @@ import { type FC } from 'react';
 import { ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
-import { useUserContext } from '@/app/contexts/UserContext';
 import AddIcon from '@/app/assets/icons/add-icon.svg';
 import LogoutIcon from '@/app/assets/icons/logout-icon.svg';
 import { Text } from '@/app/components';
+import { useUserContext } from '@/app/contexts/UserContext';
 import { useMedications } from '@/app/hooks/useMedications';
 import { MainNavigationProps } from '@/app/interfaces/navigation/main.interface';
 import { MAIN_ROUTE } from '@/app/routes/routes';

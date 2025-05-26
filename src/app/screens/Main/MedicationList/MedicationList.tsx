@@ -74,7 +74,7 @@ const MedicationList: FC = () => {
 
   const { data: medications, isLoading } = useMedications();
 
-  const onAddPress = () => navigation.navigate(MAIN_ROUTE.MEDICATION_INFO);
+  const handleAddPress = () => navigation.navigate(MAIN_ROUTE.MEDICATION_INFO);
 
   return (
     <View style={styles.root}>
@@ -97,7 +97,7 @@ const MedicationList: FC = () => {
           style={styles.medicationsContainer}
         />
       )}
-      <TouchableOpacity style={styles.addButton} onPress={onAddPress}>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddPress}>
         <AddIcon height={24} width={24} />
       </TouchableOpacity>
     </View>

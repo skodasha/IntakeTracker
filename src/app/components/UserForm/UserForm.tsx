@@ -3,12 +3,11 @@ import { TouchableOpacity, View } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Text } from '@/app/components';
+import Button from '@/app/components/Button';
+import ErrorMessage from '@/app/components/ErrorMessage';
+import FormField from '@/app/components/FormField';
+import FullScreenLoader from '@/app/components/FullScreenLoader';
 import { IUserRequest } from '@/app/interfaces/user.interface';
-
-import Button from '../Button';
-import ErrorMessage from '../ErrorMessage';
-import FormField from '../FormField';
-import FullScreenLoader from '../FullScreenLoader';
 
 import { resolver } from './schema';
 

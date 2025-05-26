@@ -13,7 +13,7 @@ const SignUp: FC = () => {
   const [errors, setErrors] = useState<ErrorObjectType>();
   const navigation = useNavigation<AuthNavigationProps<typeof AUTH_ROUTE.SIGN_IN>>();
 
-  const onSubmit = async (data: IUserRequest) => {
+  const handleSubmit = async (data: IUserRequest) => {
     try {
       await register(data);
     } catch (err) {
@@ -21,7 +21,7 @@ const SignUp: FC = () => {
     }
   };
 
-  const onLinkPress = () => navigation.navigate(AUTH_ROUTE.SIGN_IN);
+  const handleLinkPress = () => navigation.navigate(AUTH_ROUTE.SIGN_IN);
 
   return (
     <UserForm
@@ -30,8 +30,8 @@ const SignUp: FC = () => {
       linkDescription="I already have an account"
       linkTitle="Sign in"
       title="Sign up"
-      onLinkPress={onLinkPress}
-      onSubmit={onSubmit}
+      onLinkPress={handleLinkPress}
+      onSubmit={handleSubmit}
     />
   );
 };

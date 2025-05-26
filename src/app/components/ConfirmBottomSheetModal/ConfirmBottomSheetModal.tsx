@@ -4,8 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { createStyleSheet, useStyles } from 'react-native-unistyles';
 
 import { Text } from '@/app/components';
-
-import Button from '../Button';
+import Button from '@/app/components/Button';
 
 import BackdropComponent from './BackdropComponent';
 
